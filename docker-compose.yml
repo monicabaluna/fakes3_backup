@@ -1,0 +1,25 @@
+s3_service:
+    build: ./s3_uploader
+    ports:
+        - 4567
+    volumes:
+        - ./:/opt/s3_service
+    command: fakes3 -r /mnt/data/fake-s3 -p 4567
+
+mongo:
+    image: mongo:3.2
+    container_name: mongo
+    command: mongod --smallfiles
+    ports:
+        - 27017
+
+fetcher:
+    build: ./fetcher
+    links:
+        - mongo:mongo
+        - s3_service:s3-service
+    volumes:
+        - ./fetcher:/opt/fetcher:Z
+    command: /opt/fetcher/archive_db.sh $db_name
+    ports:
+        - 27017
