@@ -3,14 +3,14 @@ s3_service:
     ports:
         - 4567
     volumes:
-        - ./:/opt/s3_service
-    command: fakes3 -r /mnt/data/fake-s3 -p 4567
+        - ./s3_uploader/:/opt/s3_uploader:Z
+    command: /opt/s3_uploader/unpack.sh
 
 mongo:
     image: mongo:3.2
     container_name: mongo
     command: mongod --smallfiles
-    ports:
+    expose:
         - 27017
 
 fetcher:
@@ -21,5 +21,5 @@ fetcher:
     volumes:
         - ./fetcher:/opt/fetcher:Z
     command: /opt/fetcher/archive_db.sh $db_name
-    ports:
+    expose:
         - 27017
