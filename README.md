@@ -14,7 +14,7 @@ You will see three containers running at the same time:
 * mongo - the MongoDB instance
 * fetcher - the "local" app - fetches data from the database and then checks if
   it's correctly backed up with S3
-* s3_service - simulates a S3 cloud, using fake-s3
+* s3_service - simulates an S3 cloud, using fake-s3
 
 ## Step by step guide
 
@@ -30,27 +30,28 @@ so it's best to make separate directories: fetcher and s3_uploader (mongo needs
 no scripts).
 
 Preliminary docker-compose.yml:
-> mongo:
->     image: mongo:3.2
->     container_name: mongo
->     command: mongod --smallfiles
->     expose:
->         - 27017
-> 
-> s3_service:
->     build: ./s3_uploader
->     ports:
->         - 4567
->     volumes:
->         - ./s3_uploader/:/opt/s3_uploader:Z
->     command: /opt/s3_uploader/unpack.sh
-> 
-> fetcher:
->     build: ./fetcher
->     links:
->         - mongo:mongo
->         - s3_service:s3-service
->     volumes:
->         - ./fetcher:/opt/fetcher:Z
->     command: /opt/fetcher/archive_db.sh $db_name
+```sh
+mongo:
+    image: mongo:3.2
+    container_name: mongo
+    command: mongod --smallfiles
+    expose:
+        - 27017
 
+s3_service:
+    build: ./s3_uploader
+    ports:
+        - 4567
+    volumes:
+        - ./s3_uploader/:/opt/s3_uploader:Z
+    command: /opt/s3_uploader/unpack.sh
+
+fetcher:
+    build: ./fetcher
+    links:
+        - mongo:mongo
+        - s3_service:s3-service
+    volumes:
+        - ./fetcher:/opt/fetcher:Z
+    command: /opt/fetcher/archive_db.sh $db_name
+```
