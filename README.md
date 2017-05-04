@@ -84,6 +84,7 @@ that contain a list of values (non-random).
 Run the program in a bash script (fetcher/archive_db), since more commands
 follow.
 
+
 ### Backing up data
 
 The simplest way to back up data is using mongodump:
@@ -94,3 +95,25 @@ This command will back up all data from the mongo instance, from the requested
 database ($1), generate json and bson files for the collections, then archive
 the whole result into $ARCHIVE.
 
+
+### Uploading data to (fake)s3
+
+To to this, we need aws-cli (already installed in the dockerfile). Export
+access keys with some random values.
+```
+export AWS_ACCESS_KEY_ID=1234
+export AWS_SECRET_ACCESS_KEY=1234
+```
+Next, use aws-cli to create a bucket in s3. This actually creates your own
+folder on s3, where you can upload objects. Use s3-service as endpoint (it's
+the alias given to the s3 container).
+```
+aws --endpoint-url http://s3-service:4567 s3 mb s3://mongo_backup
+
+```
+Now we can upload the archive to s3.
+```
+aws --endpoint-url http://s3-service:4567 s3 cp $ARCHIVE s3://mongo_backup/dump
+```
+
+Next step will be checking the restored data, after it's been generated.
