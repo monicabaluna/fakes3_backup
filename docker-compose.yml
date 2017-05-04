@@ -1,17 +1,19 @@
-s3_service:
-    build: ./s3_uploader
-    ports:
-        - 4567
-    volumes:
-        - ./s3_uploader/:/opt/s3_uploader:Z
-    command: /opt/s3_uploader/unpack.sh
-
 mongo:
     image: mongo:3.2
     container_name: mongo
     command: mongod --smallfiles
     expose:
         - 27017
+
+s3_service:
+    build: ./s3_uploader
+    ports:
+        - 4567
+    links:
+        - mongo:mongo
+    volumes:
+        - ./s3_uploader/:/opt/s3_uploader:Z
+    command: /opt/s3_uploader/unpack.sh
 
 fetcher:
     build: ./fetcher
