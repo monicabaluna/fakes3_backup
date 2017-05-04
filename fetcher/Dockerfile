@@ -11,3 +11,5 @@ RUN npm install --save knox
 RUN apt-get install -y python-pip
 RUN pip install --upgrade pip
 RUN pip install --upgrade awscli
+
+RUN npm install --save mongodb
