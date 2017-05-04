@@ -40,18 +40,28 @@ mongo:
 
 s3_service:
     build: ./s3_uploader
-    ports:
+    expose:
         - 4567
-    volumes:
-        - ./s3_uploader/:/opt/s3_uploader:Z
-    command: /opt/s3_uploader/unpack.sh
 
 fetcher:
     build: ./fetcher
     links:
         - mongo:mongo
         - s3_service:s3-service
-    volumes:
-        - ./fetcher:/opt/fetcher:Z
-    command: /opt/fetcher/archive_db.sh $db_name
 ```
+mongo
+: we specify the mongo image we're using (mongo:3.2 - will be pulled from the
+official repository)
+: we specify a container name (mongo)
+: it's going to run the mongod daemon for a small database
+: we know for sure we need to expose port 27017, so that other containers can
+interact with mongo
+s3_service
+: s3_uploader directory represents the build context; before we run
+docker-compose, we must add a Dockerfile into that directory
+: we're going to add a command later
+fetcher
+: represents the local client
+: we'll use fetcher directory as build context
+: since the client fetches data from mongo and uploads it to s3, we need links
+to the other containers
