@@ -7,7 +7,7 @@ mongo:
 
 s3_service:
     build: ./s3_uploader
-    ports:
+    expose:
         - 4567
     links:
         - mongo:mongo
