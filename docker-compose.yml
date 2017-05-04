@@ -23,5 +23,3 @@ fetcher:
     volumes:
         - ./fetcher:/opt/fetcher:Z
     command: /opt/fetcher/archive_db.sh $db_name
-    expose:
-        - 27017
