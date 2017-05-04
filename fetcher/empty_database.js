@@ -3,18 +3,21 @@
 var url = 'mongodb://mongo:27017/';
 
 if (process.argv.length < 3)
-    url += 'test'
+    url += 'test';
 else
-    url += process.argv[2]
+    url += process.argv[2];
 
-var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
-var ObjectId = require('mongodb').ObjectID;
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+const ObjectId = require('mongodb').ObjectID;
 
 MongoClient.connect(url,
                     function(err, db) {
                         assert.equal(null, err);
-                        db.dropDatabase();
-                        
+                        db.dropDatabase(function(err, result) {
+                                            assert.equal(null, err);
+                                            db.close();
+                                        }
+                        );
                     }
 );
