@@ -18,7 +18,7 @@ You will see three containers running at the same time:
 
 ## Step by step guide
 
-### Preparing app hierarchy
+### Preparing the app hierarchy
 
 Since the situation we're trying to simulate implies three entities (the local
 station, the cloud and the mongo database), we're going to need three
@@ -65,3 +65,32 @@ docker-compose, we must add a Dockerfile into that directory
 - we'll use fetcher directory as build context
 - since the client fetches data from mongo and uploads it to s3, we need links
 to the other containers
+
+
+### Generating data for the database
+
+We generate data on the "local station" (fetcher).
+For this station, use the ubuntu:latest starting image. 
+Since we're going to use some javascript scripts to interact with MongoDB, we
+need to install npm and a js library to interact with MongoDB. Also, in order
+to store data into S3, install aws-cli. The mongo-org 3.2 package will also be
+needed later. See installed packages in fetcher/Dockerfile.
+
+Now that the Dockerfile is ready, we can start writing scripts. 
+
+Use fetcher/fill_database.js to generate some data and send it to the mongo
+instance. This script generates some collections ('a', 'ab', 'abc', ... 'a-z')
+that contain a list of values (non-random).
+Run the program in a bash script (fetcher/archive_db), since more commands
+follow.
+
+### Backing up data
+
+The simplest way to back up data is using mongodump:
+```
+mongodump --host mongo --port 27017 --db $1 --gzip --archive=$ARCHIVE
+```
+This command will back up all data from the mongo instance, from the requested
+database ($1), generate json and bson files for the collections, then archive
+the whole result into $ARCHIVE.
+
