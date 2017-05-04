@@ -49,19 +49,19 @@ fetcher:
         - mongo:mongo
         - s3_service:s3-service
 ```
-*mongo
-** we specify the mongo image we're using (mongo:3.2 - will be pulled from the
+1. mongo
+- we specify the mongo image we're using (mongo:3.2 - will be pulled from the
 official repository)
-** we specify a container name (mongo)
-** it's going to run the mongod daemon for a small database
-** we know for sure we need to expose port 27017, so that other containers can
+- we specify a container name (mongo)
+- it's going to run the mongod daemon for a small database
+- we know for sure we need to expose port 27017, so that other containers can
 interact with mongo
-*s3_service
-** s3_uploader directory represents the build context; before we run
+2. s3_service
+- s3_uploader directory represents the build context; before we run
 docker-compose, we must add a Dockerfile into that directory
-** we're going to add a command later
-*fetcher
-** represents the local client
-** we'll use fetcher directory as build context
-** since the client fetches data from mongo and uploads it to s3, we need links
+- we're going to add a command later
+3. fetcher
+- represents the local client
+- we'll use fetcher directory as build context
+- since the client fetches data from mongo and uploads it to s3, we need links
 to the other containers
