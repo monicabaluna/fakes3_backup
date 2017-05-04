@@ -10,6 +10,10 @@ while [ ! -e /mnt/data/fake-s3/s3-service/mongo_backup/dump ]; do
     sleep 1
 done
 
-sleep 1
+sleep 5
 
-mongorestore --host s3_service --port 27017 --archive --gzip /mnt/data/fake-s3/s3-service/mongo_backup/dump
+echo "Fetched data"
+mongorestore --host mongo --port 27017 --archive --gzip /mnt/data/fake-s3/s3-service/mongo_backup/dump --db restored
+echo "Restored data"
+
+while true; do sleep 1; done
